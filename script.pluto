@@ -32,8 +32,13 @@ end
 
 local function try_suffix(results, hash_prefix, depth, ...)
 	depth -= 1
+	local chars = {}
+	for b = 0x61, 0x7A do table.insert(chars, b) end -- a-z
+	for b = 0x30, 0x39 do table.insert(chars, b) end -- 0-9
+	table.insert(chars, 0x2E) -- .
+
 	if depth == 0 then
-		for b = 0x61, 0x7A do
+		for _, b in ipairs(chars) do
 			local partial = joaat_add(hash_prefix, b)
 			local hash = joaat_finalise(partial)
 			if is_good_hash(hash) then
@@ -46,7 +51,7 @@ local function try_suffix(results, hash_prefix, depth, ...)
 		end
 	end
 	if depth > 0 and #results < 10 then
-		for b = 0x61, 0x7A do
+		for _, b in ipairs(chars) do
 			local partial = joaat_add(hash_prefix, b)
 			try_suffix(results, partial, depth, b, ...)
 		end
