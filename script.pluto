@@ -25,7 +25,7 @@ local high_hash = false
 local secret_account = false
 
 local function is_good_hash(hash)
-	return high_hash ? hash >= 0xffff0000 : hash < 0x10000
+	return high_hash and hash >= 0xffff0000 or hash < 0x10000
 end
 
 local function results_add(results, suffix, hash)
@@ -69,6 +69,7 @@ end
 
 local function calc()
 	local prefix = (document.getElementById("name-prefix").value or ""):lower()
+	secret_account = document.getElementById("secret-account").checked
 	local chars_to_add = secret_account and (4 - #prefix) or (6 - #prefix)
 	if chars_to_add < 0 or chars_to_add > (secret_account and 4 or 6) then
 		document.getElementById("output").textContent = "Impossible"
@@ -76,7 +77,6 @@ local function calc()
 	end
 
 	high_hash = document.getElementById("high-hash").checked
-	secret_account = document.getElementById("secret-account").checked
 
 	local partial = joaat_partial(prefix)
 	local results = {}
@@ -90,7 +90,7 @@ local function calc()
 	if #results == 0 then
 		document.getElementById("output").textContent = "No matches found"
 	else
-		results:sort(|a, b| -> #a < #b)
+		results:sort(function(a, b) return #a < #b end)
 		document.getElementById("output").textContent = results:concat("")
 	end
 end
