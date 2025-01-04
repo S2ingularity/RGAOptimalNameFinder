@@ -1,10 +1,62 @@
-<title>GTA Name Finder</title>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GTA Name Finder</title>
+    <style>
+        h1 {
+            margin-top: -5px;
+            margin-bottom: -20px;
+        }
+        body {
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
 
-<input id="name-prefix" type="text" value="EpicGamer" />
-<input id="high-hash" type="checkbox" /><label for="high-hash"> Find high hashes</label>
-<pre id="output">Calculating...</pre>
-<p>Note that capitalisation does not matter.</p>
+        input[type="text"] {
+            background-color: #2d2d2d;
+            border: 1px solid #3c3c3c;
+            color: #d4d4d4;
+            padding: 10px;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
 
-<script src="https://pluto-lang.org/wasm-builds/out/libpluto/0.9.5/libpluto.js"></script>
-<script src="https://pluto-lang.org/PlutoScript/plutoscript.js"></script>
-<script type="pluto" src="script.pluto"></script>
+        input[type="checkbox"] {
+            margin-right: 5px;
+        }
+
+        label {
+            color: #d4d4d4;
+        }
+
+        pre {
+            background-color: #2d2d2d;
+            border: 1px solid #3c3c3c;
+            color: #d4d4d4;
+            padding: 10px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        p {
+            color: #d4d4d4;
+        }
+    </style>
+</head>
+<body>
+    <h1>GTA Name Finder</h1>
+    <p style="font-size:12px">Note that capitalisation does not matter.</p>
+    <input id="name-prefix" type="text" value="EpicGamer" />
+    <input id="high-hash" type="checkbox" /><label for="high-hash"> Find high hashes</label>
+    <pre id="output">Calculating...</pre>
+
+    <script src="https://pluto-lang.org/wasm-builds/out/libpluto/0.9.5/libpluto.js"></script>
+    <script src="https://pluto-lang.org/PlutoScript/plutoscript.js"></script>
+    <script type="pluto" src="script.pluto"></script>
+</body>
+</html>
