@@ -73,8 +73,9 @@ end
 
 local function calc()
 	local prefix = (document.getElementById("name-prefix").value or ""):lower()
-	local chars_to_add = 6 - #prefix
-	if chars_to_add < 0 or chars_to_add > 6 then
+	local min_chars_to_add = math.max(1, 6 - #prefix)
+	local max_chars_to_add = 16 - #prefix
+	if min_chars_to_add > max_chars_to_add then
 		document.getElementById("output").textContent = "Impossible"
 		return
 	end
