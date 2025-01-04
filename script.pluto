@@ -49,9 +49,13 @@ local function try_suffix(results, hash_prefix, depth, ...)
 				t:reverse()
 				local suffix = t:map(string.char):concat()
 				if secret_account then
-					suffix = suffix:sub(1, 4) .. ".."
+					if #suffix == 4 then
+						suffix = suffix .. ".."
+						results_add(results, suffix, hash)
+					end
+				else
+					results_add(results, suffix, hash)
 				end
-				results_add(results, suffix, hash)
 			end
 		end
 	end
@@ -65,8 +69,8 @@ end
 
 local function calc()
 	local prefix = (document.getElementById("name-prefix").value or ""):lower()
-	local chars_to_add = 6 - #prefix
-	if chars_to_add < 0 or chars_to_add > 6 then
+	local chars_to_add = secret_account and (4 - #prefix) or (6 - #prefix)
+	if chars_to_add < 0 or chars_to_add > (secret_account and 4 or 6) then
 		document.getElementById("output").textContent = "Impossible"
 		return
 	end
