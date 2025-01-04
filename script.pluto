@@ -73,9 +73,8 @@ end
 
 local function calc()
 	local prefix = (document.getElementById("name-prefix").value or ""):lower()
-	secret_account = document.getElementById("secret-account").checked
-	local chars_to_add = secret_account and (4 - #prefix) or (6 - #prefix)
-	if chars_to_add < 0 or chars_to_add > (secret_account and 4 or 6) then
+	local chars_to_add = 6 - #prefix
+	if chars_to_add < 0 or chars_to_add > 6 then
 		document.getElementById("output").textContent = "Impossible"
 		return
 	end
@@ -90,7 +89,12 @@ local function calc()
 			results_add(results, "", hash)
 		end
 	end
-	try_suffix(results, partial, chars_to_add)
+	for chars_to_add = min_chars_to_add, max_chars_to_add do
+		try_suffix(results, partial, chars_to_add)
+		if #results >= 10 then
+			break
+		end
+	end
 	if #results == 0 then
 		document.getElementById("output").textContent = "No matches found"
 	else
