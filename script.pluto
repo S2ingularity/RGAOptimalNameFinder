@@ -50,8 +50,12 @@ local function try_suffix(results, hash_prefix, depth, ...)
 				local suffix = t:map(string.char):concat()
 				if secret_account then
 					if #suffix == 4 then
-						suffix = suffix .. ".."
-						results_add(results, suffix, hash)
+						local full_suffix = suffix .. ".."
+						local full_hash = joaat_partial(full_suffix, partial)
+						full_hash = joaat_finalise(full_hash)
+						if is_good_hash(full_hash) then
+							results_add(results, full_suffix, full_hash)
+						end
 					end
 				else
 					results_add(results, suffix, hash)
