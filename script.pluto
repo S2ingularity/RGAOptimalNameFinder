@@ -23,8 +23,9 @@ end
 
 local high_hash = false
 local secret_account = false
+
 local function is_good_hash(hash)
-	return high_hash ? hash >= 0xffff0000 : hash < 0x10000
+	return high_hash and hash >= 0xffff0000 or hash < 0x10000
 end
 
 local function results_add(results, suffix, hash)
@@ -47,7 +48,18 @@ local function try_suffix(results, hash_prefix, depth, ...)
 				t:insert(1, b)
 				t:reverse()
 				local suffix = t:map(string.char):concat()
-				results_add(results, suffix, hash)
+				if secret_account then
+					if #suffix == 4 then
+						local full_suffix = suffix .. ".."
+						local full_hash = joaat_partial(full_suffix, partial)
+						full_hash = joaat_finalise(full_hash)
+						if is_good_hash(full_hash) then
+							results_add(results, full_suffix, full_hash)
+						end
+					end
+				else
+					results_add(results, suffix, hash)
+				end
 			end
 		end
 	end
@@ -61,14 +73,14 @@ end
 
 local function calc()
 	local prefix = (document.getElementById("name-prefix").value or ""):lower()
-	local chars_to_add = 6 - #prefix
-	if chars_to_add < 0 or chars_to_add > 6 then
+	secret_account = document.getElementById("secret-account").checked
+	local chars_to_add = secret_account and (4 - #prefix) or (6 - #prefix)
+	if chars_to_add < 0 or chars_to_add > (secret_account and 4 or 6) then
 		document.getElementById("output").textContent = "Impossible"
 		return
 	end
 
 	high_hash = document.getElementById("high-hash").checked
-	secret_account = document.getElementById("secret-account").checked
 
 	local partial = joaat_partial(prefix)
 	local results = {}
@@ -78,22 +90,11 @@ local function calc()
 			results_add(results, "", hash)
 		end
 	end
-
-	if secret_account then
-		if #prefix == 4 then
-			try_suffix(results, partial, 2)
-		else
-			document.getElementById("output").textContent = "Prefix must be exactly 4 characters for Secret Account"
-			return
-		end
-	else
-		try_suffix(results, partial, chars_to_add)
-	end
-
+	try_suffix(results, partial, chars_to_add)
 	if #results == 0 then
 		document.getElementById("output").textContent = "No matches found"
 	else
-		results:sort(|a, b| -> #a < #b)
+		results:sort(function(a, b) return #a < #b end)
 		document.getElementById("output").textContent = results:concat("")
 	end
 end
