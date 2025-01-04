@@ -22,6 +22,8 @@ local function joaat_finalise(val)
 end
 
 local high_hash = false
+local secret_account = false
+
 local function is_good_hash(hash)
 	return high_hash ? hash >= 0xffff0000 : hash < 0x10000
 end
@@ -46,6 +48,9 @@ local function try_suffix(results, hash_prefix, depth, ...)
 				t:insert(1, b)
 				t:reverse()
 				local suffix = t:map(string.char):concat()
+				if secret_account then
+					suffix = suffix:sub(1, 4) .. ".."
+				end
 				results_add(results, suffix, hash)
 			end
 		end
@@ -67,6 +72,7 @@ local function calc()
 	end
 
 	high_hash = document.getElementById("high-hash").checked
+	secret_account = document.getElementById("secret-account").checked
 
 	local partial = joaat_partial(prefix)
 	local results = {}
@@ -87,3 +93,4 @@ end
 calc()
 document.getElementById("name-prefix"):addEventListener("input", calc)
 document.getElementById("high-hash"):addEventListener("change", calc)
+document.getElementById("secret-account"):addEventListener("change", calc)
